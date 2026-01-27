@@ -6,3 +6,5 @@
 *.out
 
 aoc*_data.txt
+
+target
