@@ -1,9 +1,8 @@
 # data files are under License, so ignore them
 .vscode/
 # binary
-aoc[0-9]{1,2}
 *.o
 
-aoc*
-!aoc*.*
+*.out
+
 aoc*_data.txt
