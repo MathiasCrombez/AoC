@@ -1,21 +1,11 @@
-use std::fs;
+use crate::helpers::Part;
 
-const INPUT_FILES : [&str; 2] = [
-    "../../aoc3_ex.txt",
-    "../../aoc3_data.txt",
-];
-
-enum Part {
-    Part1,
-    Part2,
-}
-
-const RESULTS: [[i64; 2]; 2] = [
+pub const RESULTS: [[i64; 2]; 2] = [
     [357, 3121910778619],    // Expected results for example input: Part1, Part2
     [16993, 168617068915447], // Expected results for actual data input: Part1, Part2
 ];
 
-fn parse_input(input: &str, mode: &Part) -> i64 {
+pub fn parse_input(input: &str, mode: &Part) -> i64 {
 
     let mut result: i64 = 0;
 
@@ -63,24 +53,5 @@ fn parse_input(input: &str, mode: &Part) -> i64 {
         result += value;
     }
 
-    println!("Result: {}", result);
     result
-}
-
-
-fn main() {
-    for mode in [Part::Part1, Part::Part2] {
-        for file in INPUT_FILES {
-            let before = std::time::Instant::now();
-            let input = fs::read_to_string(file).expect("Failed to read input file");
-            let result = parse_input(&input, &mode);
-            assert_eq!(result, RESULTS[INPUT_FILES.iter().position(|&f| f == file).unwrap()][match mode {
-               Part::Part1 => 0,
-               Part::Part2 => 1,
-            }]);
-            let after = std::time::Instant::now();
-            let duration = after.duration_since(before);
-            println!("Time taken for file {}: {:?}", file, duration);
-        }
-    }
 }
