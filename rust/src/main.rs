@@ -8,13 +8,14 @@ mod aoc2;
 mod aoc3;
 mod aoc4;
 mod aoc5;
+mod aoc6;
 
 
 struct Day {
     name: &'static str, results: [[i64; 2]; 2], parser: fn(&str, &Part) -> i64
 }
 
-const DAYS: [Day; 5] = [
+const DAYS: [Day; 6] = [
     Day {
         name: "aoc1",
         results: aoc1::RESULTS,
@@ -39,6 +40,11 @@ const DAYS: [Day; 5] = [
         name: "aoc5",
         results: aoc5::RESULTS,
         parser: aoc5::parse_input,
+    },
+    Day {
+        name: "aoc6",
+        results: aoc6::RESULTS,
+        parser: aoc6::parse_input,
     },
 ];
 
