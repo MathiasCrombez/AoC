@@ -17,20 +17,17 @@ pub fn parse_input(input: &str, mode: &Part) -> i64 {
         }
         
         let direction = match line.chars().next() {
-            Some('R') => true,
-            Some('L') => false,
+            Some('R') => 1,
+            Some('L') => -1,
             _ => continue,
         };
         
         let value: i64 = line[1..].parse().unwrap_or(0);
         let offset: i64 = value / 100;
-        let value_modulo = value % 100;
+        let value_modulo = value.rem_euclid(100);
         
-        let new_index = if direction {
-            (index + value_modulo) % 100
-        } else {
-            (index - value_modulo + 100) % 100
-        };
+        let new_index =
+            (index + direction * value_modulo).rem_euclid(100);
 
         match mode {
             Part::Part1 => {
@@ -39,11 +36,7 @@ pub fn parse_input(input: &str, mode: &Part) -> i64 {
                 }
             }
             Part::Part2 => {
-                let wrapped = if direction {
-                    index != 0 && (index + value_modulo) >= 100
-                } else {
-                    index != 0 && (index - value_modulo) <= 0
-                };
+                let wrapped = ((1..100).contains(&(index + direction * value_modulo)) == false) && (index != 0);
                 if wrapped {
                     result += 1;
                 }
