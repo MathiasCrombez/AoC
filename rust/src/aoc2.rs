@@ -5,6 +5,11 @@ pub const RESULTS: [[i64; 2]; 2] = [
     [24157613387, 33832678380], // Expected results for actual data input: Part1, Part2
 ];
 
+/*
+ * TODO: We could get all numbers with repeating segments and then filter them by the input ranges,
+ * instead of checking each number in the range for repeating segments. This would be more
+ * efficient, especially for larger ranges.
+ */
 pub fn parse_input(input: &str, mode: &Part) -> i64 {
     let mut result: i64 = 0;
 
