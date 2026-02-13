@@ -9,8 +9,7 @@ pub fn parse_input(input: &str, mode: &Part) -> i64 {
 
     let mut result: i64 = 0;
 
-    for num_str in input.lines().map(|line| line.trim()).filter(|line| !line.is_empty()) {
-        let num_slice = num_str.as_bytes();
+    for num_slice in input.lines().map(|line| line.bytes().map(|b| b - b'0').collect::<Vec<u8>>()) {
         let mut max: [u8; 12] = [0; 12];
         let joltage_digits = match mode {
             Part::Part1 => 2,
@@ -18,7 +17,7 @@ pub fn parse_input(input: &str, mode: &Part) -> i64 {
         };
         
         for idx in 0..num_slice.len() {
-            let digit_value = num_slice[idx] - b'0';
+            let digit_value = num_slice[idx];
             let remaining = num_slice.len() - idx - 1;
             
             match mode {
@@ -46,11 +45,8 @@ pub fn parse_input(input: &str, mode: &Part) -> i64 {
                 }
             }
         }
-        let mut value: i64 = 0;
-        for i in 0..joltage_digits {
-            value = value * 10 + (max[i] as i64);
-        }
-        result += value;
+        // Convert the max array to a number and add to result
+        result += max.iter().take(joltage_digits).fold(0, |acc, &x| acc * 10 + (x as i64));
     }
 
     result
