@@ -13,33 +13,44 @@ pub fn parse_input(input: &str, mode: &Part) -> i64 {
 
     for line in input.lines().filter(|l| !l.is_empty()) {
         let mut line_result = 0;
-        let leds : Vec<u8> = line.chars().filter_map(|c| if c == '.' { Some(0) } else if c == '#' { Some(1) } else { None }).collect();
+        let leds : u32 = line.split_ascii_whitespace().nth(0).unwrap()[1..].bytes().enumerate().fold(0, |acc, (i, b)| {
+            if b == b'#' {
+                acc | (1 << i)
+            } else {
+                acc
+            }
+        });
 
         let re = Regex::new(r"\(((\d+,)*\d+)\)").unwrap();
 
         let buttons = re.captures_iter(line)
             .filter_map(|cap| {
-                let nums: Vec<u8> = cap[1].split(',').filter_map(|s| s.trim().parse::<u8>().ok()).collect();
-                Some(nums)
+                let action: u32 = cap[1].split(',').filter_map(|s| s.trim().parse::<u8>().ok()).fold(0, |acc, n| acc | (1 << n));
+                Some(action)
             })
-            .collect::<Vec<Vec<u8>>>();
+            .collect::<Vec<u32>>();
 
 
         let max_combinations: usize = 1 << buttons.len();
+        let mut combinations : Vec<u32> = Vec::with_capacity(max_combinations);
+        for i in 0..buttons.len() {
+            combinations.push(1 << i);
+        }
+        for i in 0..buttons.len() {
+            for j in i+1..buttons.len() {
+                combinations.push(1 << i | 1 << j);
+            }
+        }
 
         for combination in 0..max_combinations {
-            let mut leds = leds.clone();
+            let mut result_leds = 0;
             for b in 0..buttons.len() {
                 if (combination & (1 << b)) != 0 {
-                    for &led_idx in &buttons[b] {
-                        // Toggle the LED at led_idx
-                        if let Some(led) = leds.get_mut(led_idx as usize) {
-                            *led ^= 1; // Toggle between 0 and 1
-                        }
-                    }
+                    // Toggle the LEDs for the current button
+                    result_leds ^= buttons[b];
                 }
             }
-            let matches = leds.iter().filter(|&&led| led == 0).count() == leds.len();
+            let matches = result_leds == leds;
 
             if matches {
                 let num_buttons_pressed = combination.count_ones() as i64;
@@ -51,7 +62,6 @@ pub fn parse_input(input: &str, mode: &Part) -> i64 {
         }
         result += line_result;
     }
-
 
     result
 }
